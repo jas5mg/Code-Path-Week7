@@ -1,40 +1,40 @@
 # Project 7 - WordPress Pentesting
 
-Time spent: **5** hours spent in total
+Time spent: **7** hours spent in total
 
-> Objective: Find, analyze, recreate, and document **five vulnerabilities** affecting an old version of WordPress
+> Objective: Find, analyze, recreate, and document affecting an old version of WordPress
 
 ## Pentesting Report
 
 1. (Required) Vulnerability Name or ID: Unauthenticated Stored Cross-Site Scripting (XSS)
-  - [ ] Summary: Made a comment that was very long (>64 kb). The length caused the comment to be truncated when inserted into the database. This truncation lead to a malformed HTML generated on the page. For demonstration purposes, I created a simple alert pop up on the page. 
+  - [ ] Summary: Comments longer that 64 kb, can cuase a trucated database insertion. This insertion can lead to a malformated HTML page generation which can be used to create an XSS attack.
     - Vulnerability types: Cross-Site Scripting (XSS)
     - Tested in version: 4.2
     - Fixed in version: 4.2.1
   - [ ] GIF Walkthrough: ![Alt Text](https://github.com/jas5mg/Code-Path-Week7/blob/master/Vuln_1.gif)
-  - [ ] Steps to recreate: View the webpage as an unauthorized user. Enter a comment such as: <a title='x onmouseover=alert(unescape(/hello%20world/.source)) style=position:absolute;left:0;top:0;width:5000px;height:5000px  AAAAAAAAAAAA...[64 kb]..AAA'></a> where the AAAAAAAAA is repeated for at least 64kb. Upon entering the comment, an alert box will pop up. 
+  - [ ] Steps to recreate: As an unauthenticated user, leave a reply with the following comment. <a title='x onmouseover=alert(unescape(/hello%20world/.source)) style=position:absolute;left:0;top:0;width:5000px;height:5000px  AAAAAAAAAAAA...'></a> where the AAAAAAAAA is repeated for at least 64kb worth of data. When this reply is viewed by any user, an XSS attack will be triggered. 
   - [ ] Affected source code:
-    - [Link 1](https://core.trac.wordpress.org/browser/tags/version/src/source_file.php)
+    - [Link 1]()
 
 2. (Required) Vulnerability Name or ID: Authenticated Stored Cross-Site Scripting (XSS)
-  - [ ] Summary: As an editor, it is possible to create an XSS attack against other users by saving a post containing an XSS attack as a draft. When other users attempt to preview this draft, the Javascript in the post will run the XSS attack.
+  - [ ] Summary: As an editor, it is possible to save a draft of a post containing an XSS attack. If another user, such as an admin attempts to preview this draft, the Javascript injected in the post draft will trigger the XSS attack.
     - Vulnerability types: Cross-Site Scripting (XSS)
     - Tested in version: 4.2
     - Fixed in version: 4.2.3
-  - [ ] GIF Walkthrough: 
-  - [ ] Steps to recreate: Login to the admin portion of of the WordPress as an editor. Create a post containing an XSS attack such as:  <img src=1 onerror=alert('XSS')>. Save this post as a draft. When another user previews this post, and the image fails to load, an alert will be triggered.  
+  - [ ] GIF Walkthrough: ![Alt Text](https://github.com/jas5mg/Code-Path-Week7/blob/master/Vuln_2.gif)
+  - [ ] Steps to recreate: As an editor, login to WordPress. Create a draft of a post containing an XSS attack such as <img src=1 onerror=alert('XSS')>.  When the admin previews this post, an alert will be triggered when the image fails to load.
   - [ ] Affected source code:
-    - [Link 1](https://core.trac.wordpress.org/browser/tags/version/src/source_file.php)
+    - [Link 2]()
 
 3. (Required) Vulnerability Name or ID: Authenticated Stored Cross-Site Scripting (XSS) in YouTube URL Embeds
-  - [ ] Summary: Simple comments alone often are altered before they are actually posted (WordPress protects against basic Cross-Site Scripting attacks). However, embedded comments are not monitored as closely. The embedded comments are checked with many regular expressions to find out what the proper handling method is. Sucuri blog found that the youtube url has the highest likelihood for issues. However, the cross-site scripting function cannot have any <> characters since they will be cleaned. The handler takes the youtube URL and simply concatenates the rest of the embedded text. Since the autoembed function is unable to create a link, it returns the URL as typed. However, due to the sanitization property of the kses(), the returned URL will be cleaned. However, the shortcode parsing function has escape functions. Thus, the attack has the required XSS attribute values and then an escape function to escape from the parsing method. 
+  - [ ] Summary: Due to issues with how Wordpress sanitizes Embeded YouTube URLs, it is possible to added malicious code to the link. When the page is loaded, the additional Javascript that is added to the Embeded YouTube URL is triggered creating an XSS attack.
     - Vulnerability types: Cross-Site Scripting (XSS)
     - Tested in version: 4.2
     - Fixed in version: 4.2.13
-  - [ ] GIF Walkthrough: 
-  - [ ] Steps to recreate: Log in to the admin page as an editor. Edit one of the pages to include the embedded youtube url link: [embed src='https://youtube.com/embed/text\x3csvg onload=alert(1)\x3e'][/embed]
+  - [ ] GIF Walkthrough: ![Alt Text](https://github.com/jas5mg/Code-Path-Week7/blob/master/Vuln_3.gif)
+  - [ ] Steps to recreate: As an editor, login to WordPress. Create a page that contains the following link: [embed src='https://youtube.com/embed/BLAH\x3csvg onload=alert(6)\x3e'][/embed]. When the page is loaded, the alert will be triggered.
   - [ ] Affected source code:
-    - [Link 1](https://core.trac.wordpress.org/browser/tags/version/src/source_file.php)
+    - [Link 3]()
 
 
 ## Assets
